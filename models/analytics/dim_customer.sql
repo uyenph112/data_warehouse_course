@@ -16,3 +16,8 @@ with dim_customer__source as(
   ,cast(customer_name as string) as customer_name
   from dim_customer__rename_column
 )
+
+select
+customer_key
+,customer_name
+from dim_customer__cast_type
