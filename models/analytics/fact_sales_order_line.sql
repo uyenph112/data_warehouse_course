@@ -21,3 +21,11 @@ with fact_sales_order_lines__source as(
   from fact_sales_order_lines__rename_column
 )
 
+
+select 
+sales_order_line_key
+,product_key
+,quantity
+,unit_price
+,quantity * unit_price as gross_amount
+from fact_sales_order_lines__cast_type
