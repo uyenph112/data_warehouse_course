@@ -9,3 +9,10 @@ with dim_customer__source as(
   customer_name	as customer_name
   from dim_customer__source
 )
+
+,dim_customer__cast_type as(
+  select
+  cast(customer_key as int) as customer_key
+  ,cast(customer_name as string) as customer_name
+  from dim_customer__rename_column
+)
