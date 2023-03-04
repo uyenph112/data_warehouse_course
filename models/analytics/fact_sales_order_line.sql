@@ -12,3 +12,12 @@ with fact_sales_order_lines__source as(
   from fact_sales_order_lines__source
 )
 
+,fact_sales_order_lines__cast_type as(
+  select
+  cast(sales_order_line_key as int) as sales__order_lines
+  ,cast(product_key as int) as product_key
+  ,cast(quantity as int) as quantity
+  ,cast(unit_price as numeric) as unit_price
+  from fact_sales_order_lines__rename_column
+)
+
