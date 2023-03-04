@@ -14,9 +14,10 @@ with fact_sales_order_lines__source as(
 
 ,fact_sales_order_lines__cast_type as(
   select
-  cast(sales_order_line_key as int) as sales_order_lines
+  cast(sales_order_line_key as int) as sales_order_line_key
   ,cast(product_key as int) as product_key
   ,cast(quantity as int) as quantity
   ,cast(unit_price as numeric) as unit_price
   from fact_sales_order_lines__rename_column
 )
+
