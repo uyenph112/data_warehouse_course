@@ -6,6 +6,7 @@ with fact_sales_order_lines__source as(
 ,fact_sales_order_lines__rename_column as(
   select 
   order_line_id as sales_order_line_key
+  ,order_id as sales_order_key
   ,stock_item_id as product_key
   ,quantity
   ,unit_price
@@ -15,6 +16,7 @@ with fact_sales_order_lines__source as(
 ,fact_sales_order_lines__cast_type as(
   select
   cast(sales_order_line_key as int) as sales_order_line_key
+  ,cast(sales_order_key as int) as sales_order_key
   ,cast(product_key as int) as product_key
   ,cast(quantity as int) as quantity
   ,cast(unit_price as numeric) as unit_price
@@ -24,6 +26,7 @@ with fact_sales_order_lines__source as(
 
 select 
 sales_order_line_key
+,sales_order_key
 ,product_key
 ,quantity
 ,unit_price
