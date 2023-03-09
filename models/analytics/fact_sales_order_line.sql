@@ -38,5 +38,5 @@ fact_line.sales_order_line_key
 ,fact_line.unit_price
 ,fact_line.gross_amount
 from fact_sales_order_line__calculate_measure as fact_line
-left join dwh-course.wide_world_importers_dwh_staging.stg_fact_sales_order as fact_header
+left join {{ ref('stg_fact_sales_order') }} as fact_header
 on fact_line.sales_order_key = fact_header.sales_order_key
