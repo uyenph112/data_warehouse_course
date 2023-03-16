@@ -28,6 +28,11 @@ UNION ALL
   SELECT 
     0 AS person_key
     , 'Undefined' as full_name
+
+UNION ALL 
+  SELECT 
+    -1 AS person_key
+    , 'Invalid' as full_name
 )
 
 SELECT
