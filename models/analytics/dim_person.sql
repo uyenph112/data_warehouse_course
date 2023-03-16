@@ -18,7 +18,19 @@ WITH dim_person__source AS(
   FROM dim_person__rename_column
 )
 
+,dim_person__add_undefined_record AS(
+  SELECT
+    person_key
+    ,full_name
+  FROM dim_person__cast_type
+
+UNION ALL 
+  SELECT 
+    0 AS person_key
+    , 'Undefined' as full_name
+)
+
 SELECT
   person_key
   ,full_name
-FROM dim_person__cast_type
+FROM dim_person__add_undefined_record
