@@ -42,6 +42,7 @@ dim_customer.customer_key
 ,dim_customer_cate.customer_category_name
 ,dim_customer.buying_group_key
 ,dim_buying_group.buying_group_name
+,dim_customer.is_on_credit_hold
 from dim_customer__convert_boolean AS dim_customer 
 left join {{ ref('stg_dim_customer_category') }} dim_customer_cate
   on dim_customer.customer_category_key = dim_customer_cate.customer_category_key
