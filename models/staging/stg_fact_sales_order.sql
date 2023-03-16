@@ -4,8 +4,9 @@ with stg_fact_sales_order__source as(
 )
 
 ,stg_fact_sales_order__rename_column as(
-  select 
-  order_id as sales_order_key
+  select
+  order_date as order_date
+  ,order_id as sales_order_key
   ,customer_id as customer_key
   ,picked_by_person_id as picked_by_person_key
   from stg_fact_sales_order__source
@@ -13,14 +14,16 @@ with stg_fact_sales_order__source as(
 
 ,stg_fact_sales_order__cast_type as(
   select
-  cast(sales_order_key as int) as sales_order_key
+  cast(order_date as DATE) as order_date
+  ,cast(sales_order_key as int) as sales_order_key
   ,cast(customer_key as int) as customer_key
   ,cast(picked_by_person_key as int) as picked_by_person_key
   from stg_fact_sales_order__rename_column
 )
 
 select
-sales_order_key
+order_date
+,sales_order_key
 ,customer_key
 ,COALESCE(picked_by_person_key, 0) AS picked_by_person_key
 from stg_fact_sales_order__cast_type
