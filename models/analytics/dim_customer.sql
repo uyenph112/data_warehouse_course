@@ -12,7 +12,9 @@ WITH dim_customer__source AS(
       , account_opened_date
       , payment_days
       , standard_discount_percentage AS standard_discount_pct
-      , credit_limit 
+      , credit_limit
+      , primary_contact_person_id AS primary_contact_person_key
+      , alternate_contact_person_id AS alternate_contact_person_key 
       , customer_category_id AS customer_category_key
       , buying_group_id AS buying_group_key
       , delivery_method_id AS delivery_method_key
@@ -31,6 +33,8 @@ WITH dim_customer__source AS(
     , CAST(payment_days AS INT) AS payment_days
     , CAST(standard_discount_pct AS NUMERIC) AS standard_discount_pct
     , CAST(credit_limit AS NUMERIC) AS credit_limit
+    , CAST(primary_contact_person_key AS INT) AS primary_contact_person_key
+    , CAST(alternate_contact_person_key AS INT) AS alternate_contact_person_key
     , CAST(customer_category_key AS INT) AS customer_category_key
     , CAST(buying_group_key AS INT) AS buying_group_key
     , CAST(delivery_method_key AS INT) AS delivery_method_key
@@ -65,22 +69,30 @@ SELECT
   , dim_customer.account_opened_date
   , dim_customer.payment_days
   , dim_customer.standard_discount_pct
-  , dim_customer.credit_limit
+  , COALESCE(dim_customer.credit_limit, 0) AS credit_limit
+  , dim_customer.primary_contact_person_key
+  , COALESCE(dim_primary_person.person_name, 'Undefined') AS primary_contact_person_name
+  , COALESCE(dim_customer.alternate_contact_person_key, -1) AS alternate_contact_person_key
+  , COALESCE(dim_alternate_person.person_name, 'Undefined') AS alternate_contact_person_name
   , dim_customer.customer_category_key
   , COALESCE(dim_customer_cate.customer_category_name, 'Undefined') AS customer_category_name
-  , dim_customer.buying_group_key
-  , COALESCE(dim_buying_group.buying_group_name, 'Invalid') AS buying_group_name
+  , COALESCE(dim_customer.buying_group_key, -1) AS buying_group_key
+  , COALESCE(dim_buying_group.buying_group_name, 'Undefined') AS buying_group_name
   , dim_customer.delivery_method_key
-  , COALESCE(dim_delivery_method.delivery_method_name, 'Invalid') AS delivery_method_name
+  , COALESCE(dim_delivery_method.delivery_method_name, 'Undefined') AS delivery_method_name
   , dim_customer.delivery_city_key
-  , COALESCE(dim_delivery_city.city_name, 'Invalid') AS delivery_city_name 
-  , COALESCE(dim_delivery_city.state_province_name, 'Invalid') AS delivery_state_province_name
-  , COALESCE(dim_delivery_city.country_name, 'Invalid') AS delivery_country_name
+  , COALESCE(dim_delivery_city.city_name, 'Undefined') AS delivery_city_name 
+  , COALESCE(dim_delivery_city.state_province_name, 'Undefined') AS delivery_state_province_name
+  , COALESCE(dim_delivery_city.country_name, 'Undefined') AS delivery_country_name
   , dim_customer.postal_city_key
-  , COALESCE(dim_postal_city.city_name, 'Invalid') AS postal_city_name 
-  , COALESCE(dim_postal_city.state_province_name, 'Invalid') AS postal_state_province_name
-  , COALESCE(dim_postal_city.country_name, 'Invalid') AS postal_country_name
-FROM dim_customer__convert_boolean AS dim_customer 
+  , COALESCE(dim_postal_city.city_name, 'Undefined') AS postal_city_name 
+  , COALESCE(dim_postal_city.state_province_name, 'Undefined') AS postal_state_province_name
+  , COALESCE(dim_postal_city.country_name, 'Undefined') AS postal_country_name
+FROM dim_customer__convert_boolean AS dim_customer
+LEFT JOIN {{ ref('dim_person') }} AS dim_primary_person
+  ON dim_customer.primary_contact_person_key = dim_primary_person.person_key
+LEFT JOIN {{ ref('dim_person') }} AS dim_alternate_person
+  ON dim_customer.alternate_contact_person_key = dim_alternate_person.person_key
 LEFT JOIN {{ ref('stg_dim_customer_category') }} AS dim_customer_cate
   ON dim_customer.customer_category_key = dim_customer_cate.customer_category_key
 LEFT JOIN {{ ref('stg_dim_sales_buying_group') }} AS dim_buying_group 
