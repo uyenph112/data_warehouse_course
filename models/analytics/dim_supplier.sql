@@ -33,7 +33,20 @@ WITH dim_supplier__source AS(
 )
 
 SELECT
-  supplier_key
-  , supplier_name
+  dim_supplier.supplier_key
+  , dim_supplier.supplier_name
+  , dim_supplier.payment_days
+  , dim_supplier.primary_contact_person_key
+  , alternate_contact_person_key
 FROM dim_supplier__cast_type AS dim_supplier 
+LEFT JOIN {{ ref(dim_person) }} AS dim_primary_person
+  ON dim_supplier.primary_contact_person_key = dim_primary_person.person_key
+LEFT JOIN {{ ref(dim_person) }} AS dim_alternate_person
+  ON dim_supplier.alternate_contact_person_key = dim_alternate_person.person_key
 LEFT JOIN 
+LEFT JOIN {{ ref('stg_dim_delivery_method') }} AS dim_delivery_method
+  ON dim_customer.delivery_method_key = dim_delivery_method.delivery_method_key
+LEFT JOIN {{ ref('stg_dim_city') }} AS dim_delivery_city 
+  ON dim_customer.delivery_city_key = dim_delivery_city.city_key
+LEFT JOIN {{ ref('stg_dim_city') }} AS dim_postal_city
+  ON dim_customer.postal_city_key = dim_postal_city.city_key
