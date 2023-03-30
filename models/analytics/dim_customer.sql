@@ -67,7 +67,7 @@ SELECT
   , dim_customer.standard_discount_pct
   , dim_customer.credit_limit
   , dim_customer.customer_category_key
-  , COALESCE(dim_customer_cate.customer_category_name, 'Invalid') AS customer_category_name
+  , COALESCE(dim_customer_cate.customer_category_name, 'Undefined') AS customer_category_name
   , dim_customer.buying_group_key
   , COALESCE(dim_buying_group.buying_group_name, 'Invalid') AS buying_group_name
   , dim_customer.delivery_method_key

@@ -33,9 +33,9 @@ WITH dim_product__source AS(
     , CAST(recommended_retail_price AS NUMERIC) AS recommended_retail_price
     , CAST(typical_weight_per_unit AS NUMERIC) AS typical_weight_per_unit
     , CAST(supplier_key AS INT) AS supplier_key
-    , CAST(color_key_key AS INT) AS color_key_key
-    , CAST(unit_package_key_key AS INT) AS unit_package_key_key
-    , CAST(outer_package_key_key AS INT) AS outer_package_key_key
+    , CAST(color_key AS INT) AS color_key
+    , CAST(unit_package_key AS INT) AS unit_package_key
+    , CAST(outer_package_key AS INT) AS outer_package_key
   FROM dim_product__rename_column
 )
 
@@ -53,11 +53,33 @@ WITH dim_product__source AS(
 
 SELECT 
 dim_product.product_key
-,dim_product.product_name
-,dim_product.is_chiller_stock
-,dim_product.supplier_key
-,COALESCE(dim_supplier.supplier_name, 'Invalid') AS supplier_name
-,COALESCE(dim_product.brand_name, 'Undefined') AS brand_name
+, dim_product.product_name
+, COALESCE(dim_product.product_brand, 'Undefined') AS product_brand
+, dim_product.is_chiller_stock
+, dim_product.quantity_per_outer
+, dim_product.lead_time_days
+, dim_product.unit_price
+, dim_product.recommended_retail_price
+, dim_product.typical_weight_per_unit
+, dim_product.supplier_key
+, COALESCE(dim_supplier.supplier_name, 'Undefined') AS supplier_name
+, COALESCE(dim_supplier.supplier_category_name, 'Undefined') AS supplier_category_name
+, COALESCE(dim_supplier.delivery_method_name, 'Undefined') AS supplier_delivery_method_name
+, COALESCE(dim_supplier.delivery_city_name, 'Undefined') AS supplier_delivery_city_name
+, COALESCE(dim_supplier.delivery_state_province_name, 'Undefined') AS supplier_delivery_state_province_name
+, COALESCE(dim_supplier.delivery_country_name, 'Undefined') AS supplier_delivery_country_name
+, COALESCE(dim_product.color_key, -1) AS color_key
+, COALESCE(dim_color.color_name, 'Undefined') AS color_name
+, dim_product.unit_package_key
+, COALESCE(dim_unit_package_type.package_type_name, 'Undefined') AS unit_package_name
+, dim_product.outer_package_key
+, COALESCE(dim_outer_package_type.package_type_name, 'Undefined') AS outer_package_name
 FROM dim_product__convert_boolean AS dim_product
 LEFT JOIN {{ ref('dim_supplier')}} AS dim_supplier
   ON dim_product.supplier_key = dim_supplier.supplier_key
+LEFT JOIN {{ ref('stg_dim_color')}} AS dim_color
+  ON dim_product.color_key = dim_color.color_key
+LEFT JOIN {{ ref('stg_dim_package_type')}} AS dim_unit_package_type
+  ON dim_product.unit_package_key = dim_unit_package_type.package_type_key
+LEFT JOIN {{ ref('stg_dim_package_type')}} AS dim_outer_package_type
+  ON dim_product.outer_package_key = dim_outer_package_type.package_type_key
