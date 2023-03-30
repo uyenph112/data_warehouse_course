@@ -37,21 +37,21 @@ SELECT
   , dim_supplier.supplier_name
   , dim_supplier.payment_days
   , dim_supplier.primary_contact_person_key
-  , COALESCE(dim_primary_person.person_name, 'Invalid') AS primary_contact_person_name
+  , COALESCE(dim_primary_person.person_name, 'Undefined') AS primary_contact_person_name
   , dim_supplier.alternate_contact_person_key
-  , COALESCE(dim_alternate_person.person_name, 'Invalid') AS alternate_contact_person_name
+  , COALESCE(dim_alternate_person.person_name, 'Undefined') AS alternate_contact_person_name
   , dim_supplier.supplier_category_key
-  , COALESCE(dim_supplier_category.supplier_category_name, 'Invalid') AS supplier_category_name
-  , dim_supplier.delivery_method_key
-  , COALESCE(dim_delivery_method.delivery_method_name, 'Invalid') AS delivery_method_name
+  , COALESCE(dim_supplier_category.supplier_category_name, 'Undefined') AS supplier_category_name
+  , COALESCE(dim_supplier.delivery_method_key, -1) AS delivery_method_key
+  , COALESCE(dim_delivery_method.delivery_method_name, 'Undefined') AS delivery_method_name
   , dim_supplier.delivery_city_key
-  , COALESCE(dim_delivery_city.city_name, 'Invalid') AS delivery_city_name 
-  , COALESCE(dim_delivery_city.state_province_name, 'Invalid') AS delivery_state_province_name
-  , COALESCE(dim_delivery_city.country_name, 'Invalid') AS delivery_country_name
+  , COALESCE(dim_delivery_city.city_name, 'Undefined') AS delivery_city_name 
+  , COALESCE(dim_delivery_city.state_province_name, 'Undefined') AS delivery_state_province_name
+  , COALESCE(dim_delivery_city.country_name, 'Undefined') AS delivery_country_name
   , dim_supplier.postal_city_key
-  , COALESCE(dim_postal_city.city_name, 'Invalid') AS postal_city_name 
-  , COALESCE(dim_postal_city.state_province_name, 'Invalid') AS postal_state_province_name
-  , COALESCE(dim_postal_city.country_name, 'Invalid') AS postal_country_name
+  , COALESCE(dim_postal_city.city_name, 'Undefined') AS postal_city_name 
+  , COALESCE(dim_postal_city.state_province_name, 'Undefined') AS postal_state_province_name
+  , COALESCE(dim_postal_city.country_name, 'Undefined') AS postal_country_name
 FROM dim_supplier__cast_type AS dim_supplier 
 LEFT JOIN {{ ref('dim_person') }} AS dim_primary_person
   ON dim_supplier.primary_contact_person_key = dim_primary_person.person_key
