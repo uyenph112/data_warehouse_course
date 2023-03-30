@@ -1,29 +1,56 @@
-with stg_fact_sales_order__source as(
-  select *
-  from `vit-lam-data.wide_world_importers.sales__orders`
+WITH stg_fact_sales_order__source AS(
+  SELECT *
+  FROM `vit-lam-data.wide_world_importers.sales__orders`
 )
 
-,stg_fact_sales_order__rename_column as(
-  select
-  order_date as order_date
-  ,order_id as sales_order_key
-  ,customer_id as customer_key
-  ,picked_by_person_id as picked_by_person_key
-  from stg_fact_sales_order__source
+, stg_fact_sales_order__rename_column AS(
+    SELECT
+      order_id AS order_key
+      , customer_id AS customer_key
+      , salesperson_person_id AS salesperson_person_key
+      , picked_by_person_id AS picked_by_person_key
+      , contact_person_id AS contact_person_key
+      , backorder_order_id AS backorder_order_key
+      , is_undersupply_backordered AS is_undersupply_backordered_boolean
+      , order_date
+      , expected_delivery_date
+    FROM stg_fact_sales_order__source
 )
 
-,stg_fact_sales_order__cast_type as(
-  select
-  cast(order_date as DATE) as order_date
-  ,cast(sales_order_key as int) as sales_order_key
-  ,cast(customer_key as int) as customer_key
-  ,cast(picked_by_person_key as int) as picked_by_person_key
-  from stg_fact_sales_order__rename_column
+, stg_fact_sales_order__cast_type AS(
+    SELECT
+      CAST(order_key AS INT) AS order_key
+      , CAST(customer_key AS INT) AS customer_key
+      , CAST(salesperson_person_key AS INT) AS salesperson_person_key
+      , CAST(picked_by_person_key AS INT) AS picked_by_person_key
+      , CAST(contact_person_key AS INT) AS contact_person_key
+      , CAST(backorder_order_key AS INT) AS backorder_order_key
+      , CAST(is_undersupply_backordered_boolean AS BOOLEAN) AS is_undersupply_backordered_boolean
+      , CAST(order_date AS DATE) AS order_date
+      , CAST(expected_delivery_date AS DATE) AS expected_delivery_date
+    FROM stg_fact_sales_order__rename_column
 )
 
-select
-order_date
-,sales_order_key
-,customer_key
-,COALESCE(picked_by_person_key, 0) AS picked_by_person_key
-from stg_fact_sales_order__cast_type
+, stg_fact_sales_order__convert_boolean AS(
+    SELECT 
+      *
+      , CASE 
+          WHEN is_undersupply_backordered_boolean IS TRUE THEN 'Backordered'
+          WHEN is_undersupply_backordered_boolean IS FALSE THEN 'Not Backordered'
+          WHEN is_undersupply_backordered_boolean IS NULL THEN 'Undefined'
+          ELSE 'Invalid'
+        END AS is_undersupply_backordered
+    FROM stg_fact_sales_order__cast_type
+)
+
+SELECT
+order_key
+, customer_key
+, salesperson_person_key
+, COALESCE(picked_by_person_key, -1) AS picked_by_person_key
+, contact_person_key
+, backorder_order_key
+, is_undersupply_backordered
+, order_date
+, expected_delivery_date
+FROM stg_fact_sales_order__convert_boolean

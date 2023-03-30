@@ -48,8 +48,8 @@ WITH dim_customer__source AS(
     *
     , CASE 
         WHEN is_statement_sent_boolean IS TRUE THEN 'Statement Sent'
-        WHEN is_on_credit_hold_boolean IS FALSE THEN 'Statement Not Sent'
-        WHEN is_on_credit_hold_boolean IS NULL THEN 'Undefined'
+        WHEN is_statement_sent_boolean IS FALSE THEN 'Statement Not Sent'
+        WHEN is_statement_sent_boolean IS NULL THEN 'Undefined'
         ELSE 'Invalid'
       END AS is_statement_sent
     , CASE 
