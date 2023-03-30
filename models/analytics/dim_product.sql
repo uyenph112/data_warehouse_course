@@ -1,37 +1,53 @@
-with dim_product__source as(
-  select *
-  from `vit-lam-data.wide_world_importers.warehouse__stock_items`
+WITH dim_product__source AS(
+  SELECT *
+  FROM `vit-lam-data.wide_world_importers.warehouse__stock_items`
 )
 
-,dim_product__rename_column as(
-  select 
-  stock_item_id as product_key
-  ,supplier_id as supplier_key
-  ,stock_item_name as product_name
-  ,brand as brand_name
-  ,is_chiller_stock AS is_chiller_stock_boolean
-  from dim_product__source
+,dim_product__rename_column AS(
+  SELECT 
+    stock_item_id AS product_key
+    , stock_item_name AS product_name
+    , brand AS product_brand
+    , is_chiller_stock AS is_chiller_stock_boolean
+    , quantity_per_outer
+    , lead_time_days
+    , unit_price
+    , recommended_retail_price
+    , typical_weight_per_unit
+    , supplier_id AS supplier_key
+    , color_id AS color_key
+    , unit_package_id AS unit_package_key
+    , outer_package_id AS outer_package_key
+  FROM dim_product__source
 )
 
-,dim_product__cast_type as(
-  select
-  cast(product_key as int) as product_key
-  ,cast(supplier_key as int) as supplier_key
-  ,cast(product_name as string) as product_name
-  ,cast(brand_name as string) as brand_name
-  ,cast(is_chiller_stock_boolean as boolean) as is_chiller_stock_boolean
-  from dim_product__rename_column
+, dim_product__cast_type AS(
+  SELECT
+    CAST(product_key AS INT) AS product_key  
+    , CAST(product_name AS STRING) AS product_name
+    , CAST(product_brand AS STRING) AS product_brand
+    , CAST(is_chiller_stock_boolean AS BOOLEAN) AS is_chiller_stock_boolean
+    , CAST(quantity_per_outer AS INT) AS quantity_per_outer
+    , CAST(lead_time_days AS INT) AS lead_time_days
+    , CAST(unit_price AS NUMERIC) AS unit_price
+    , CAST(recommended_retail_price AS NUMERIC) AS recommended_retail_price
+    , CAST(typical_weight_per_unit AS NUMERIC) AS typical_weight_per_unit
+    , CAST(supplier_key AS INT) AS supplier_key
+    , CAST(color_key_key AS INT) AS color_key_key
+    , CAST(unit_package_key_key AS INT) AS unit_package_key_key
+    , CAST(outer_package_key_key AS INT) AS outer_package_key_key
+  FROM dim_product__rename_column
 )
 
-,dim_product__convert_boolean as(
-  select
+,dim_product__convert_boolean AS(
+  SELECT
     *
     , CASE 
-      WHEN is_chiller_stock_boolean IS TRUE THEN 'Chiller Stock'
-      WHEN is_chiller_stock_boolean IS FALSE THEN 'Not Chiller Stock'
-      WHEN is_chiller_stock_boolean IS NULL THEN 'Undefined'
-      ELSE 'Invalid' END
-      AS is_chiller_stock
+        WHEN is_chiller_stock_boolean IS TRUE THEN 'Chiller Stock'
+        WHEN is_chiller_stock_boolean IS FALSE THEN 'Not Chiller Stock'
+        WHEN is_chiller_stock_boolean IS NULL THEN 'Undefined'
+        ELSE 'Invalid' 
+      END AS is_chiller_stock
   from dim_product__cast_type
 )
 
@@ -40,8 +56,8 @@ dim_product.product_key
 ,dim_product.product_name
 ,dim_product.is_chiller_stock
 ,dim_product.supplier_key
-,COALESCE(dim_supplier.supplier_name, 'Invalid') as supplier_name
-,COALESCE(dim_product.brand_name, 'Undefined') as brand_name
+,COALESCE(dim_supplier.supplier_name, 'Invalid') AS supplier_name
+,COALESCE(dim_product.brand_name, 'Undefined') AS brand_name
 FROM dim_product__convert_boolean AS dim_product
 LEFT JOIN {{ ref('dim_supplier')}} AS dim_supplier
   ON dim_product.supplier_key = dim_supplier.supplier_key
