@@ -71,23 +71,23 @@ SELECT
   , dim_customer.standard_discount_pct
   , COALESCE(dim_customer.credit_limit, 0) AS credit_limit
   , dim_customer.primary_contact_person_key
-  , COALESCE(dim_primary_person.person_name, 'Undefined') AS primary_contact_person_name
-  , COALESCE(dim_customer.alternate_contact_person_key, -1) AS alternate_contact_person_key
-  , COALESCE(dim_alternate_person.person_name, 'Undefined') AS alternate_contact_person_name
+  , COALESCE(dim_primary_person.person_name, 'Invalid') AS primary_contact_person_name
+  , COALESCE(dim_customer.alternate_contact_person_key, 0) AS alternate_contact_person_key
+  , dim_alternate_person.person_name AS alternate_contact_person_name
   , dim_customer.customer_category_key
-  , COALESCE(dim_customer_cate.customer_category_name, 'Undefined') AS customer_category_name
-  , COALESCE(dim_customer.buying_group_key, -1) AS buying_group_key
-  , COALESCE(dim_buying_group.buying_group_name, 'Undefined') AS buying_group_name
+  , COALESCE(dim_customer_cate.customer_category_name, 'Invalid') AS customer_category_name
+  , COALESCE(dim_customer.buying_group_key, 0) AS buying_group_key
+  , dim_buying_group.buying_group_name AS buying_group_name
   , dim_customer.delivery_method_key
-  , COALESCE(dim_delivery_method.delivery_method_name, 'Undefined') AS delivery_method_name
+  , COALESCE(dim_delivery_method.delivery_method_name, 'Invalid') AS delivery_method_name
   , dim_customer.delivery_city_key
-  , COALESCE(dim_delivery_city.city_name, 'Undefined') AS delivery_city_name 
-  , COALESCE(dim_delivery_city.state_province_name, 'Undefined') AS delivery_state_province_name
-  , COALESCE(dim_delivery_city.country_name, 'Undefined') AS delivery_country_name
+  , COALESCE(dim_delivery_city.city_name, 'Invalid') AS delivery_city_name 
+  , COALESCE(dim_delivery_city.state_province_name, 'Invalid') AS delivery_state_province_name
+  , COALESCE(dim_delivery_city.country_name, 'Invalid') AS delivery_country_name
   , dim_customer.postal_city_key
-  , COALESCE(dim_postal_city.city_name, 'Undefined') AS postal_city_name 
-  , COALESCE(dim_postal_city.state_province_name, 'Undefined') AS postal_state_province_name
-  , COALESCE(dim_postal_city.country_name, 'Undefined') AS postal_country_name
+  , COALESCE(dim_postal_city.city_name, 'Invalid') AS postal_city_name 
+  , COALESCE(dim_postal_city.state_province_name, 'Invalid') AS postal_state_province_name
+  , COALESCE(dim_postal_city.country_name, 'Invalid') AS postal_country_name
 FROM dim_customer__convert_boolean AS dim_customer
 LEFT JOIN {{ ref('dim_person') }} AS dim_primary_person
   ON dim_customer.primary_contact_person_key = dim_primary_person.person_key
