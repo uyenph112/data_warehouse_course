@@ -42,13 +42,11 @@ SELECT
   fact_line.sales_order_line_key
   , fact_line.sales_order_key
   , fact_line.product_key
-  , fact_line.package_type_key
   , fact_header.customer_key
   , fact_header.salesperson_person_key
   , fact_header.picked_by_person_key
   , fact_header.contact_person_key
   , fact_header.backorder_order_key
-  , fact_header.is_undersupply_backordered_boolean
   , FARM_FINGERPRINT(CONCAT(fact_header.is_undersupply_backordered_boolean, ',' , fact_line.package_type_key)) AS sales_order_line_indicator_key
   , fact_header.order_date
   , fact_header.expected_delivery_date
