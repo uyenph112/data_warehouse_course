@@ -62,18 +62,18 @@ dim_product.product_key
 , dim_product.recommended_retail_price
 , dim_product.typical_weight_per_unit
 , dim_product.supplier_key
-, COALESCE(dim_supplier.supplier_name, 'Undefined') AS supplier_name
-, COALESCE(dim_supplier.supplier_category_name, 'Undefined') AS supplier_category_name
-, COALESCE(dim_supplier.delivery_method_name, 'Undefined') AS supplier_delivery_method_name
-, COALESCE(dim_supplier.delivery_city_name, 'Undefined') AS supplier_delivery_city_name
-, COALESCE(dim_supplier.delivery_state_province_name, 'Undefined') AS supplier_delivery_state_province_name
-, COALESCE(dim_supplier.delivery_country_name, 'Undefined') AS supplier_delivery_country_name
-, COALESCE(dim_product.color_key, -1) AS color_key
-, COALESCE(dim_color.color_name, 'Undefined') AS color_name
+, COALESCE(dim_supplier.supplier_name, 'Invalid') AS supplier_name
+, COALESCE(dim_supplier.supplier_category_name, 'Invalid') AS supplier_category_name
+, COALESCE(dim_supplier.delivery_method_name, 'Invalid') AS supplier_delivery_method_name
+, COALESCE(dim_supplier.delivery_city_name, 'Invalid') AS supplier_delivery_city_name
+, COALESCE(dim_supplier.delivery_state_province_name, 'Invalid') AS supplier_delivery_state_province_name
+, COALESCE(dim_supplier.delivery_country_name, 'Invalid') AS supplier_delivery_country_name
+, COALESCE(dim_product.color_key, 0) AS color_key
+, dim_color.color_name AS color_name
 , dim_product.unit_package_key
-, COALESCE(dim_unit_package_type.package_type_name, 'Undefined') AS unit_package_name
+, COALESCE(dim_unit_package_type.package_type_name, 'Invalid') AS unit_package_name
 , dim_product.outer_package_key
-, COALESCE(dim_outer_package_type.package_type_name, 'Undefined') AS outer_package_name
+, COALESCE(dim_outer_package_type.package_type_name, 'Invalid') AS outer_package_name
 FROM dim_product__convert_boolean AS dim_product
 LEFT JOIN {{ ref('dim_supplier')}} AS dim_supplier
   ON dim_product.supplier_key = dim_supplier.supplier_key
