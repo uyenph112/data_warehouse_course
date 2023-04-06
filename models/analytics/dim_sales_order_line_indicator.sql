@@ -1,21 +1,21 @@
-WITH dim_is_under_supply_backordered AS (
+WITH dim_is_undersupply_backordered AS (
   SELECT
-    TRUE AS is_under_supply_backordered_boolean
-    , 'Undersupply Backordered' AS is_under_supply_backordered
+    TRUE AS is_undersupply_backordered_boolean
+    , 'Undersupply Backordered' AS is_undersupply_backordered
 
   UNION ALL
 
   SELECT
-    FALSE AS is_under_supply_backordered_boolean
-    , 'Not Undersupply Backordered' AS is_under_supply_backordered
+    FALSE AS is_undersupply_backordered_boolean
+    , 'Not Undersupply Backordered' AS is_undersupply_backordered
 
 )
 
 SELECT
-  CONCAT(dim_is_under_supply_backordered.is_under_supply_backordered_boolean, ',' , dim_package_type.package_type_key) AS sales_order_line_indicator_key
-  , dim_is_under_supply_backordered.is_under_supply_backordered_boolean
-  , dim_is_under_supply_backordered.is_under_supply_backordered
+  FARM_FINGERPRINT(CONCAT(dim_is_undersupply_backordered.is_undersupply_backordered_boolean, ',' , dim_package_type.package_type_key)) AS sales_order_line_indicator_key
+  , dim_is_undersupply_backordered.is_undersupply_backordered_boolean
+  , dim_is_undersupply_backordered.is_undersupply_backordered
   , dim_package_type.package_type_key
   , dim_package_type.package_type_name
-FROM dim_is_under_supply_backordered
+FROM dim_is_undersupply_backordered
 CROSS JOIN {{ ref('dim_package_type') }}

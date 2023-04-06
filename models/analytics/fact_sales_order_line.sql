@@ -49,7 +49,7 @@ SELECT
   , fact_header.contact_person_key
   , fact_header.backorder_order_key
   , fact_header.is_undersupply_backordered_boolean
-  , CONCAT(fact_header.is_under_supply_backordered_boolean, ',', fact_line.package_type_key) AS sales_order_line_indicator_key
+  , FARM_FINGERPRINT(CONCAT(fact_header.is_undersupply_backordered_boolean, ',' , fact_line.package_type_key)) AS sales_order_line_indicator_key
   , fact_header.order_date
   , fact_header.expected_delivery_date
   , fact_line.quantity
@@ -59,6 +59,4 @@ SELECT
   , fact_line.customer_paid_amount
 FROM fact_sales_order_line__calculate_measure AS fact_line
 LEFT JOIN {{ ref('stg_fact_sales_order') }} AS fact_header
-  ON fact_line.order_key = fact_header.order_key
-LEFT JOIN {{ ref('dim_sales_order_line_indicator') }}
-  USING sales_order_line_indicator_key
+  ON fact_line.sales_order_key = fact_header.sales_order_key
