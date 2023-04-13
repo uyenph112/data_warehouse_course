@@ -42,11 +42,11 @@ SELECT
   fact_line.sales_order_line_key
   , fact_line.sales_order_key
   , fact_line.product_key
-  , fact_header.customer_key
-  , fact_header.salesperson_person_key
-  , fact_header.picked_by_person_key
-  , fact_header.contact_person_key
-  , fact_header.backorder_order_key
+  , COALESCE(fact_header.customer_key, 0) AS customer_key
+  , COALESCE(fact_header.salesperson_person_key, 0) AS salesperson_person_key
+  , COALESCE(fact_header.picked_by_person_key, 0) AS picked_by_person_key
+  , COALESCE(fact_header.contact_person_key, 0) AS contact_person_key
+  , COALESCE(fact_header.backorder_order_key, 0) AS backorder_order_key
   , FARM_FINGERPRINT(CONCAT(fact_header.is_undersupply_backordered_boolean, ',' , fact_line.package_type_key)) AS sales_order_line_indicator_key
   , fact_header.order_date
   , fact_header.expected_delivery_date
