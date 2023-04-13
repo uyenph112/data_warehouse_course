@@ -78,7 +78,7 @@ FROM dim_product__convert_boolean AS dim_product
 LEFT JOIN {{ ref('dim_supplier')}} AS dim_supplier
   ON dim_product.supplier_key = dim_supplier.supplier_key
 LEFT JOIN {{ ref('stg_dim_color')}} AS dim_color
-  ON dim_product.color_key = dim_color.color_key
+  ON COALESCE(dim_product.color_key, 0) = dim_color.color_key
 LEFT JOIN {{ ref('dim_package_type')}} AS dim_unit_package_type
   ON dim_product.unit_package_key = dim_unit_package_type.package_type_key
 LEFT JOIN {{ ref('dim_package_type')}} AS dim_outer_package_type
