@@ -15,10 +15,18 @@ models:
       - name: is_statement_sent
         tests:
           - not_null
+          - accepted_values:
+              values: ['Statement Sent', 'Statement Not Sent']
+              config:
+                where: "is_statement_sent IN ('Statement Sent', 'Statement Not Sent')"
 
       - name: is_on_credit_hold
         tests:
           - not_null
+          - accepted_values:
+              values: ['On Credit Hold', 'Not On Credit Hold']
+              config:
+                where: "is_on_credit_hold IN ('On Credit Hold', 'Not On Credit Hold')"
 
       - name: account_opened_date
         tests:
