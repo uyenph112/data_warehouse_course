@@ -31,7 +31,7 @@ WITH fact_sales_performance__from_sales AS(
 , fact_sales_performance__achievement_pct AS(
   SELECT 
     *
-    , actual_revenue / target_revenue AS achievement_pct
+    , actual_revenue / NULLIF(target_revenue, 0) AS achievement_pct
   FROM fact_sales_performance__sales_join_target
 )
 
