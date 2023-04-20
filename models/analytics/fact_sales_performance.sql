@@ -41,4 +41,8 @@ SELECT
   , actual_revenue
   , target_revenue
   , achievement_pct
+  , CASE
+      WHEN achievement_pct >= 0.8 THEN 'Achieved'
+      ELSE 'Not Achieved'
+    END AS is_achieved
 FROM fact_sales_performance__achievement_pct
