@@ -10,6 +10,8 @@ WITH dim_customer_attribubte__source AS(
 , dim_customer_attribubte__metric_caculated AS(
   SELECT
     customer_key
+    , MIN(DATE_TRUNC(order_date, MONTH)) AS start_month
+    , MAX(DATE_TRUNC(order_date, MONTH)) AS end_month
     , SUM(gross_amount) AS lifetime_sales_amount
     , COUNT(DISTINCT sales_order_key) AS lifetime_sales_orders
     , SUM(CASE 
@@ -49,6 +51,8 @@ WITH dim_customer_attribubte__source AS(
 
 SELECT 
   customer_key
+  , start_month
+  , end_month
   , lifetime_sales_amount
   , lifetime_sales_orders
   , lifetime_percentile
