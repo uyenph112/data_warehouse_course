@@ -40,7 +40,6 @@ WITH fact_customer_attribubte_by_month__source AS(
   FROM fact_customer_attribubte_by_month__generated_dimension AS generated_dimension
   LEFT JOIN fact_customer_attribubte_by_month__summary AS summary 
     USING(year_month, customer_key)
-  WHERE year_month >= (SELECT MIN(year_month) FROM fact_customer_attribubte_by_month__summary)
 )
 
 , fact_customer_attribute_by_month__percentile AS(
