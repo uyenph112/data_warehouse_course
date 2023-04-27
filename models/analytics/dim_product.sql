@@ -51,10 +51,14 @@ WITH dim_product__source AS(
   from dim_product__cast_type
 )
 
+
 SELECT 
 dim_product.product_key
 , dim_product.product_name
 , COALESCE(dim_product.product_brand, 'Undefined') AS product_brand
+, COALESCE(dim_external_product.product_category_key, 0) AS product_category_key
+, dim_product_category.product_category_name
+, dim_product_category.parent_category_name
 , dim_product.is_chiller_stock
 , dim_product.quantity_per_outer
 , dim_product.lead_time_days
@@ -83,3 +87,7 @@ LEFT JOIN {{ ref('dim_package_type')}} AS dim_unit_package_type
   ON dim_product.unit_package_key = dim_unit_package_type.package_type_key
 LEFT JOIN {{ ref('dim_package_type')}} AS dim_outer_package_type
   ON dim_product.outer_package_key = dim_outer_package_type.package_type_key
+LEFT JOIN {{ ref('stg_dim_external_stock_item')}} AS dim_external_product
+  ON dim_product.product_key = dim_external_product.product_key
+LEFT JOIN {{ ref('stg_dim_external_product_category')}} AS dim_product_category 
+  ON dim_external_product.product_category_key = dim_product_category.product_category_key
