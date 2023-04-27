@@ -7,7 +7,7 @@ WITH stg_dim_external_product_category__source AS(
   SELECT
     category_id AS product_category_key
     , category_name AS product_category_name 
-    , parent_category AS parent_category_key
+    , parent_category_id AS parent_category_key
     , category_level
   FROM stg_dim_external_product_category__source
 )
@@ -27,7 +27,7 @@ WITH stg_dim_external_product_category__source AS(
     , product_category_name
     , parent_category_key
     , category_level
-  FROM stg_dim_color__cast_type
+  FROM stg_dim_external_product_category__cast_type
 
   UNION ALL
   SELECT
