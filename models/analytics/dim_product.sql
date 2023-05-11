@@ -59,6 +59,11 @@ dim_product.product_key
 , COALESCE(dim_external_product.product_category_key, 0) AS product_category_key
 , dim_product_category.product_category_name
 , dim_product_category.parent_category_name
+, dim_product_category.category_level
+, dim_product_category.level_1
+, dim_product_category.level_2
+, dim_product_category.level_3
+, dim_product_category.level_4
 , dim_product.is_chiller_stock
 , dim_product.quantity_per_outer
 , dim_product.lead_time_days
